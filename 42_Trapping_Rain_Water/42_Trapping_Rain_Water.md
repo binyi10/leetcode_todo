@@ -1,6 +1,6 @@
 ﻿# 42. Trapping Rain Water
 
-标签（空格分隔）： leetcode c 双指针
+标签： leetcode c 双指针
 
 ---
 
@@ -15,7 +15,7 @@ Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
 ![此处输入图片的描述][1]
 
 
-  [1]: http://www.leetcode.com/wp-content/uploads/2012/08/rainwatertrap.png
+  [1]: /42_Trapping_Rain_Water/rainwatertrap.png
 ## 解析 ##
 题目大意是，给出了一幅海拔图，然后通过凹下去的部分计算到底能存住多少水。
 
