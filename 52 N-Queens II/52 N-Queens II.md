@@ -7,6 +7,7 @@
 ## 题目 ##
 Follow up for N-Queens problem.
 Now, instead outputting board configurations, return the total number of distinct solutions.
+![此处输入图片的描述][1]
 
 ![此处输入图片的描述][1]
 
@@ -24,7 +25,7 @@ Now, instead outputting board configurations, return the total number of distinc
  1. 初阶：N皇后问题的最初版本是一个8皇后问题，也就是教科书上讲回溯的经典题目，在一个8x8的棋盘下边，任意两个棋子都不能在同一行，同一列，同一个对角线。
  ![此处输入图片的描述][1]
 
-  [1]: /52 N-Queens II/example.png
+  [2]: /52 N-Queens II/example.png
  2. 进阶：再细想，得到一个搜索方案，我们一行一行的往下搜索，比如说我们把第一行的棋子位置固定，也就是说第一行的棋子的列数固定，那么接下来再搜第二行，从第二行的第一列开始搜索，然后开始进行判断：
      1. 当前这个棋子的同一列和所在的两个对角线上不存在棋子，自然认为其合法，于是接着往下一行搜索，重复此判断的过程。
      2. 如果存在冲突，那么，就从此行此列的下一列开始搜，只要下一列不超过N，又重复此判断过程。如果超过N了就返回即可。
@@ -82,3 +83,6 @@ Now, instead outputting board configurations, return the total number of distinc
 
 ## 思考 ##
 通常的backtracking，都可以想成深搜DFS，这样就要定义好终结的状态也就是何时返回，通常有合法状态返回，对应于N皇后的行数i == N，此时无冲突就可以返回。非法状态返回，对应于N皇后中的列数j > N，此时列数超出，可以返回。其余条件下就对应与当前各个状态的下一个状态继续递归调用即可。
+
+
+  [1]: /52%20N-Queens%20II/52.png
