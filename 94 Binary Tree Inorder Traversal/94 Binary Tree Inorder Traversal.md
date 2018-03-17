@@ -1,6 +1,6 @@
 ﻿# 94. Binary Tree Inorder Traversal
 
-标签： leetcode c++ stl backstracking DFS
+标签： leetcode c++ stl binaryTree inorder
 
 ---
 
