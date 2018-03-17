@@ -1,16 +1,22 @@
-﻿# 52. N-Queens II
+﻿# 94. Binary Tree Inorder Traversal
 
 标签： leetcode c++ stl backstracking DFS
 
 ---
 
 ## 题目 ##
-Follow up for N-Queens problem.
-Now, instead outputting board configurations, return the total number of distinct solutions.
+Given a binary tree, return the inorder traversal of its nodes' values.
+For example:
+Given binary tree [1,null,2,3],
 ![此处输入图片的描述][1]
+return [1,3,2].
+
+Note: Recursive solution is trivial, could you do it iteratively?
+
+
 
 ## 解析 ##
-就是传统的N皇后问题，当n >= 4或者n = 1的时候有解。
+嘻嘻，最近因为马上要面试，就回忆一下树的遍历，快排，最长公共子序列，八皇后之类的基础题。言归正传，这道题就是写树的中序遍历，当然最好能写出递归和非递归两个版本。
 
 
 ----------
@@ -18,66 +24,60 @@ Now, instead outputting board configurations, return the total number of distinc
 
 理解：
 
- 1. 初阶：N皇后问题的最初版本是一个8皇后问题，也就是教科书上讲回溯的经典题目，在一个8x8的棋盘下边，任意两个棋子都不能在同一行，同一列，同一个对角线。
-![此处输入图片的描述][2]
- 2. 进阶：再细想，得到一个搜索方案，我们一行一行的往下搜索，比如说我们把第一行的棋子位置固定，也就是说第一行的棋子的列数固定，那么接下来再搜第二行，从第二行的第一列开始搜索，然后开始进行判断：
-     1. 当前这个棋子的同一列和所在的两个对角线上不存在棋子，自然认为其合法，于是接着往下一行搜索，重复此判断的过程。
-     2. 如果存在冲突，那么，就从此行此列的下一列开始搜，只要下一列不超过N，又重复此判断过程。如果超过N了就返回即可。
- 3. 再进阶：这样再一想，这就是一个深度优先的搜索（DFS），以第i行的第j列有一个棋子为例，我们首先要查询从第1行起到第i-1行中记录的这i-1个棋子的位置是否和[i,j]这个位置的棋子有冲突，有冲突就分成三种情况：
-     1. 这i-1个棋子中有某些棋子所在列col == j。
-     2. 这i-1个棋子中有某个棋子与[i,j]在45°对角线，即某个棋子的坐标[x,y] == [i-m,j-m]，其中m为1到max(i-1,j-1)这个范围的某个数。
-     3. 这i-1个棋子中某个棋子在[i,j]在135°的对角线，即某个棋子的坐标[x,y] == [i-m,j+m],其中m为1到max(i-1,N-j)这个范围某个数。
-
- 所以我们就能够根据上面的3种情况判定当前的[i,j]是否是合法的存在
-     1. 如果合法，且i != N我们就i++,j = 1(即从i+1行的第一列开始搜索)继续往下搜，如果已经i == N了，那我们则找到一个合法状态，这样合法状态++，并且可以回溯到上一层的下一个状态接着往下搜。
-     2. 如果不合法，且 j != N的话我们就j++（即从i行的j+1列继续往下搜索）继续往下重复上边的搜索过程，如果已经j == N了，那证明此状态不可行，这样就直接回溯到上一层的下一个状态接着往下搜。
+ 1. 初阶：最简单的方法就是递归，所谓的中序遍历就是先遍历左孩子，再输出根节点，再遍历右孩子。所以递归的写法按照这个舒徐一目了然。
+ 2. 进阶：就像题目描述，递归是很trivial，想增加挑战就是非递归，与先序遍历的简单不同，中序遍历的非递归比较具有技巧性和启发性，能想到的是挺天才的。基本想法就是，既然要先输出左孩子，那就先不断的从根开始往下，只要有左孩子的就进栈，并且让当前的根指向其左孩子，直到出现没有左孩子的情况。然后自然这个时候要处理的问题是，如果之前存的某个节点被pop之后，怎么确保不会再一次把它的左孩子又进栈造成死循环。当然有很好的方法就是pop之后，让其指向其右孩子，这样会出现的情况就是，
+        1. 如果没有右孩子，当前结点就指向空，自然不会再再寻找其左孩子，那么就会进入下一个pop，因此确保了不会进入左孩子又进栈的死循环：
+        2. 如有有右孩子，也就是依照之前的情况，对右孩子进行中序遍历，直到出现情况1即右孩子遍历结束，又继续pop，因此也确保不会进入死循环。
+     
 
 ## 代码 ##
+非递归
+
+    class Solution {
+            public:
+            void inorder(TreeNode* root, vector<int> & vec){
+            if(root -> left != NULL)
+            {
+                inorder(root -> left,vec);
+            }
+            vec.push_back(root -> val);
+            if(root -> right != NULL)
+            {
+                inorder(root -> right,vec);
+            }
+        
+        }
+            vector<int> inorderTraversal(TreeNode* root) {
+                vector<int> vec;
+                if(root == NULL)return vec;
+                inorder(root,vec);
+                return vec;
+    }
+};
+递归
 
     class Solution {
     public:
-    int colision(vector<int> vec,int col)
+    void inorder(TreeNode* root, vector<int> & vec)
     {
-        if(vec.size() == 0)return 0;
-        for(int i = 1;i <= vec.size();i++)
+        if(root -> left != NULL)
         {
-            int now_col = vec[vec.size() - i];
-            if(now_col == col)return 1;
-            if(now_col == col - i)return 1;
-            if(now_col == col + i)return 1;
+            inorder(root -> left,vec);
         }
-        return 0;
+        vec.push_back(root -> val);
+        if(root -> right != NULL)
+        {
+            inorder(root -> right,vec);
+        }
+        
     }
-    void DFS(vector<int> vec, int &count,int N)
-    {
-        if(vec.size() == N)
-        {
-            count++;
-            return;
-        }
-        for(int i = 1;i<=N;i++)
-        {
-            if(!colision(vec,i))
-            {
-                vec.push_back(i);
-                DFS(vec,count,N);
-                vec.erase(vec.end()-1);
-            }
-            
-        }
-    }
-    int totalNQueens(int n) {
-        int total  = 0;
+    vector<int> inorderTraversal(TreeNode* root) {
         vector<int> vec;
-        DFS(vec,total,n);
-        return total;
+        if(root == NULL)return vec;
+        inorder(root,vec);
+        return vec;
     }
 };
 
 
-## 思考 ##
-通常的backtracking，都可以想成深搜DFS，这样就要定义好终结的状态也就是何时返回，通常有合法状态返回，对应于N皇后的行数i == N，此时无冲突就可以返回。非法状态返回，对应于N皇后中的列数j > N，此时列数超出，可以返回。其余条件下就对应与当前各个状态的下一个状态继续递归调用即可。
-
-
-  [1]: /52%20N-Queens%20II/52.png
-  [2]: /52%20N-Queens%20II/example.png
+  [1]: /94%20Binary%20Tree%20Inorder%20Traversal/94.png
